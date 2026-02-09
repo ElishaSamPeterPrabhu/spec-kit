@@ -150,73 +150,136 @@ build_variant() {
     esac
   fi
   
-  [[ -d templates ]] && { mkdir -p "$SPEC_DIR/templates"; find templates -type f -not -path "templates/commands/*" -not -name "vscode-settings.json" -exec cp --parents {} "$SPEC_DIR"/ \; ; echo "Copied templates -> .specify/templates"; }
+  [[ -d templates ]] && { mkdir -p "$SPEC_DIR/templates"; find templates -type f -not -path "templates/commands/*" -not -path "templates/mcp-configs/*" -not -name "vscode-settings.json" -exec cp --parents {} "$SPEC_DIR"/ \; ; echo "Copied templates -> .specify/templates"; }
   
   # NOTE: We substitute {ARGS} internally. Outward tokens differ intentionally:
   #   * Markdown/prompt (claude, copilot, cursor-agent, opencode): $ARGUMENTS
   #   * TOML (gemini, qwen): {{args}}
   # This keeps formats readable without extra abstraction.
 
+  # MCP config template paths
+  local mcp_standard="templates/mcp-configs/mcp-standard.json"
+  local mcp_vscode="templates/mcp-configs/mcp-vscode.json"
+
   case $agent in
     claude)
       mkdir -p "$base_dir/.claude/commands"
-      generate_commands claude md "\$ARGUMENTS" "$base_dir/.claude/commands" "$script" ;;
+      generate_commands claude md "\$ARGUMENTS" "$base_dir/.claude/commands" "$script"
+      # Add Modus Docs MCP config (project-level .mcp.json)
+      [[ -f "$mcp_standard" ]] && cp "$mcp_standard" "$base_dir/.mcp.json"
+      ;;
     gemini)
       mkdir -p "$base_dir/.gemini/commands"
       generate_commands gemini toml "{{args}}" "$base_dir/.gemini/commands" "$script"
-      [[ -f agent_templates/gemini/GEMINI.md ]] && cp agent_templates/gemini/GEMINI.md "$base_dir/GEMINI.md" ;;
+      [[ -f agent_templates/gemini/GEMINI.md ]] && cp agent_templates/gemini/GEMINI.md "$base_dir/GEMINI.md"
+      # Add Modus Docs MCP config
+      [[ -f "$mcp_standard" ]] && cp "$mcp_standard" "$base_dir/.gemini/mcp.json"
+      ;;
     copilot)
       mkdir -p "$base_dir/.github/agents"
       generate_commands copilot agent.md "\$ARGUMENTS" "$base_dir/.github/agents" "$script"
       # Generate companion prompt files
       generate_copilot_prompts "$base_dir/.github/agents" "$base_dir/.github/prompts"
-      # Create VS Code workspace settings
+      # Create VS Code workspace settings (merge MCP config into settings)
       mkdir -p "$base_dir/.vscode"
-      [[ -f templates/vscode-settings.json ]] && cp templates/vscode-settings.json "$base_dir/.vscode/settings.json"
+      if [[ -f templates/vscode-settings.json && -f "$mcp_vscode" ]]; then
+        # Merge vscode settings and MCP config using Python
+        python3 -c "
+import json, sys
+with open('templates/vscode-settings.json') as f: base = json.load(f)
+with open('$mcp_vscode') as f: mcp = json.load(f)
+base.update(mcp)
+with open('$base_dir/.vscode/settings.json', 'w') as f: json.dump(base, f, indent=4); f.write('\n')
+"
+      elif [[ -f templates/vscode-settings.json ]]; then
+        cp templates/vscode-settings.json "$base_dir/.vscode/settings.json"
+      fi
       ;;
     cursor-agent)
       mkdir -p "$base_dir/.cursor/commands"
-      generate_commands cursor-agent md "\$ARGUMENTS" "$base_dir/.cursor/commands" "$script" ;;
+      generate_commands cursor-agent md "\$ARGUMENTS" "$base_dir/.cursor/commands" "$script"
+      # Add Modus Docs MCP config
+      [[ -f "$mcp_standard" ]] && cp "$mcp_standard" "$base_dir/.cursor/mcp.json"
+      ;;
     qwen)
       mkdir -p "$base_dir/.qwen/commands"
       generate_commands qwen toml "{{args}}" "$base_dir/.qwen/commands" "$script"
-      [[ -f agent_templates/qwen/QWEN.md ]] && cp agent_templates/qwen/QWEN.md "$base_dir/QWEN.md" ;;
+      [[ -f agent_templates/qwen/QWEN.md ]] && cp agent_templates/qwen/QWEN.md "$base_dir/QWEN.md"
+      # Add Modus Docs MCP config
+      [[ -f "$mcp_standard" ]] && cp "$mcp_standard" "$base_dir/.qwen/mcp.json"
+      ;;
     opencode)
       mkdir -p "$base_dir/.opencode/command"
-      generate_commands opencode md "\$ARGUMENTS" "$base_dir/.opencode/command" "$script" ;;
+      generate_commands opencode md "\$ARGUMENTS" "$base_dir/.opencode/command" "$script"
+      # Add Modus Docs MCP config
+      [[ -f "$mcp_standard" ]] && cp "$mcp_standard" "$base_dir/.opencode/mcp.json"
+      ;;
     windsurf)
       mkdir -p "$base_dir/.windsurf/workflows"
-      generate_commands windsurf md "\$ARGUMENTS" "$base_dir/.windsurf/workflows" "$script" ;;
+      generate_commands windsurf md "\$ARGUMENTS" "$base_dir/.windsurf/workflows" "$script"
+      # Add Modus Docs MCP config
+      [[ -f "$mcp_standard" ]] && cp "$mcp_standard" "$base_dir/.windsurf/mcp.json"
+      ;;
     codex)
       mkdir -p "$base_dir/.codex/prompts"
-      generate_commands codex md "\$ARGUMENTS" "$base_dir/.codex/prompts" "$script" ;;
+      generate_commands codex md "\$ARGUMENTS" "$base_dir/.codex/prompts" "$script"
+      # Add Modus Docs MCP config
+      [[ -f "$mcp_standard" ]] && cp "$mcp_standard" "$base_dir/.codex/mcp.json"
+      ;;
     kilocode)
       mkdir -p "$base_dir/.kilocode/workflows"
-      generate_commands kilocode md "\$ARGUMENTS" "$base_dir/.kilocode/workflows" "$script" ;;
+      generate_commands kilocode md "\$ARGUMENTS" "$base_dir/.kilocode/workflows" "$script"
+      # Add Modus Docs MCP config
+      [[ -f "$mcp_standard" ]] && cp "$mcp_standard" "$base_dir/.kilocode/mcp.json"
+      ;;
     auggie)
       mkdir -p "$base_dir/.augment/commands"
-      generate_commands auggie md "\$ARGUMENTS" "$base_dir/.augment/commands" "$script" ;;
+      generate_commands auggie md "\$ARGUMENTS" "$base_dir/.augment/commands" "$script"
+      # Add Modus Docs MCP config
+      [[ -f "$mcp_standard" ]] && cp "$mcp_standard" "$base_dir/.augment/mcp.json"
+      ;;
     roo)
       mkdir -p "$base_dir/.roo/commands"
-      generate_commands roo md "\$ARGUMENTS" "$base_dir/.roo/commands" "$script" ;;
+      generate_commands roo md "\$ARGUMENTS" "$base_dir/.roo/commands" "$script"
+      # Add Modus Docs MCP config
+      [[ -f "$mcp_standard" ]] && cp "$mcp_standard" "$base_dir/.roo/mcp.json"
+      ;;
     codebuddy)
       mkdir -p "$base_dir/.codebuddy/commands"
-      generate_commands codebuddy md "\$ARGUMENTS" "$base_dir/.codebuddy/commands" "$script" ;;
+      generate_commands codebuddy md "\$ARGUMENTS" "$base_dir/.codebuddy/commands" "$script"
+      # Add Modus Docs MCP config
+      [[ -f "$mcp_standard" ]] && cp "$mcp_standard" "$base_dir/.codebuddy/mcp.json"
+      ;;
     qoder)
       mkdir -p "$base_dir/.qoder/commands"
-      generate_commands qoder md "\$ARGUMENTS" "$base_dir/.qoder/commands" "$script" ;;
+      generate_commands qoder md "\$ARGUMENTS" "$base_dir/.qoder/commands" "$script"
+      # Add Modus Docs MCP config
+      [[ -f "$mcp_standard" ]] && cp "$mcp_standard" "$base_dir/.qoder/mcp.json"
+      ;;
     amp)
       mkdir -p "$base_dir/.agents/commands"
-      generate_commands amp md "\$ARGUMENTS" "$base_dir/.agents/commands" "$script" ;;
+      generate_commands amp md "\$ARGUMENTS" "$base_dir/.agents/commands" "$script"
+      # Add Modus Docs MCP config
+      [[ -f "$mcp_standard" ]] && cp "$mcp_standard" "$base_dir/.agents/mcp.json"
+      ;;
     shai)
       mkdir -p "$base_dir/.shai/commands"
-      generate_commands shai md "\$ARGUMENTS" "$base_dir/.shai/commands" "$script" ;;
+      generate_commands shai md "\$ARGUMENTS" "$base_dir/.shai/commands" "$script"
+      # Add Modus Docs MCP config
+      [[ -f "$mcp_standard" ]] && cp "$mcp_standard" "$base_dir/.shai/mcp.json"
+      ;;
     q)
       mkdir -p "$base_dir/.amazonq/prompts"
-      generate_commands q md "\$ARGUMENTS" "$base_dir/.amazonq/prompts" "$script" ;;
+      generate_commands q md "\$ARGUMENTS" "$base_dir/.amazonq/prompts" "$script"
+      # Add Modus Docs MCP config
+      [[ -f "$mcp_standard" ]] && cp "$mcp_standard" "$base_dir/.amazonq/mcp.json"
+      ;;
     bob)
       mkdir -p "$base_dir/.bob/commands"
-      generate_commands bob md "\$ARGUMENTS" "$base_dir/.bob/commands" "$script" ;;
+      generate_commands bob md "\$ARGUMENTS" "$base_dir/.bob/commands" "$script"
+      # Add Modus Docs MCP config
+      [[ -f "$mcp_standard" ]] && cp "$mcp_standard" "$base_dir/.bob/mcp.json"
+      ;;
   esac
   ( cd "$base_dir" && zip -r "../spec-kit-template-${agent}-${script}-${NEW_VERSION}.zip" . )
   echo "Created $GENRELEASES_DIR/spec-kit-template-${agent}-${script}-${NEW_VERSION}.zip"

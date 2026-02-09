@@ -591,6 +591,34 @@ def handle_vscode_settings(sub_item, dest_file, rel_path, verbose=False, tracker
         log(f"Warning: Could not merge, copying instead: {e}", "yellow")
         shutil.copy2(sub_item, dest_file)
 
+def handle_mcp_config(sub_item, dest_file, rel_path, verbose=False, tracker=None) -> None:
+    """Handle merging or copying of MCP config JSON files (mcp.json, .mcp.json).
+
+    Performs a deep merge so that existing mcpServers entries are preserved
+    and the modus-docs entry is added without overwriting the user's other MCP servers.
+    """
+    def log(message, color="green"):
+        if verbose and not tracker:
+            console.print(f"[{color}]{message}[/] {rel_path}")
+
+    try:
+        with open(sub_item, 'r', encoding='utf-8') as f:
+            new_config = json.load(f)
+
+        if dest_file.exists():
+            merged = merge_json_files(dest_file, new_config, verbose=verbose and not tracker)
+            with open(dest_file, 'w', encoding='utf-8') as f:
+                json.dump(merged, f, indent=2)
+                f.write('\n')
+            log("Merged MCP config:", "green")
+        else:
+            shutil.copy2(sub_item, dest_file)
+            log("Copied MCP config:", "blue")
+
+    except Exception as e:
+        log(f"Warning: Could not merge MCP config, copying instead: {e}", "yellow")
+        shutil.copy2(sub_item, dest_file)
+
 def merge_json_files(existing_path: Path, new_content: dict, verbose: bool = False) -> dict:
     """Merge new JSON content into existing JSON file.
 
@@ -635,7 +663,7 @@ def merge_json_files(existing_path: Path, new_content: dict, verbose: bool = Fal
     return merged
 
 def download_template_from_github(ai_assistant: str, download_dir: Path, *, script_type: str = "sh", verbose: bool = True, show_progress: bool = True, client: httpx.Client = None, debug: bool = False, github_token: str = None) -> Tuple[Path, dict]:
-    repo_owner = "github"
+    repo_owner = "ElishaSamPeterPrabhu"
     repo_name = "spec-kit"
     if client is None:
         client = httpx.Client(verify=ssl_context)
@@ -832,6 +860,9 @@ def download_and_extract_template(project_path: Path, ai_assistant: str, script_
                                         # Special handling for .vscode/settings.json - merge instead of overwrite
                                         if dest_file.name == "settings.json" and dest_file.parent.name == ".vscode":
                                             handle_vscode_settings(sub_item, dest_file, rel_path, verbose, tracker)
+                                        # Special handling for MCP config files - merge instead of overwrite
+                                        elif dest_file.name in ("mcp.json", ".mcp.json"):
+                                            handle_mcp_config(sub_item, dest_file, rel_path, verbose, tracker)
                                         else:
                                             shutil.copy2(sub_item, dest_file)
                             else:
@@ -1197,6 +1228,18 @@ def init(
         console.print()
         console.print(security_notice)
 
+    # Modus Docs MCP - TrimbleID login notice
+    tid_notice = Panel(
+        "The Modus Docs MCP server requires TrimbleID authentication.\n"
+        "On first use, you will be prompted to sign in with your TID account in your browser.\n"
+        "After signing in, your session will be cached locally.",
+        title="[cyan]Modus Docs MCP - TrimbleID Login[/cyan]",
+        border_style="cyan",
+        padding=(1, 2)
+    )
+    console.print()
+    console.print(tid_notice)
+
     steps_lines = []
     if not here:
         steps_lines.append(f"1. Go to the project folder: [cyan]cd {project_name}[/cyan]")
@@ -1307,7 +1350,7 @@ def version():
             pass
     
     # Fetch latest template release version
-    repo_owner = "github"
+    repo_owner = "ElishaSamPeterPrabhu"
     repo_name = "spec-kit"
     api_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/releases/latest"
     

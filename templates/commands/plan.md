@@ -8,6 +8,9 @@ handoffs:
   - label: Create Checklist
     agent: speckit.checklist
     prompt: Create a checklist for the following domain...
+tools:
+  - 'modus-docs/get_modus_component_data'
+  - 'modus-docs/get_modus_implementation_data'
 scripts:
   sh: scripts/bash/setup-plan.sh --json
   ps: scripts/powershell/setup-plan.ps1 -Json
@@ -88,6 +91,35 @@ You **MUST** consider the user input before proceeding (if not empty).
    - Preserve manual additions between markers
 
 **Output**: data-model.md, /contracts/*, quickstart.md, agent-specific file
+
+### Phase 1.5: UI Component Mapping (if frontend/UI project)
+
+**Prerequisites:** Phase 1 complete, Technical Context indicates a frontend/UI project
+
+**Skip this phase entirely if the project has no user-facing UI.**
+
+1. **Query available Modus components**:
+   - Call `get_modus_component_data("_all_components")` to get the full catalog of Modus Web Components
+   - Review the list of 45+ available components
+
+2. **Map functional requirements to Modus components**:
+   - For each UI-related functional requirement from the spec, identify which Modus component(s) satisfy it
+   - For each mapped component, call `get_modus_component_data("modus-wc-{name}")` to get its full API (properties, events, methods, slots)
+   - Record the mapping in the Component Mapping section of plan.md
+
+3. **Get framework integration guide**:
+   - Based on the detected framework (React, Angular, or Vue), call `get_modus_implementation_data("{framework}")` to get setup and integration instructions
+   - Record framework-specific setup steps in research.md
+
+4. **Identify gaps**:
+   - List any UI requirements that cannot be satisfied by existing Modus components
+   - For gaps, document which custom components are needed and why
+
+5. **Design system reference**:
+   - If Modus MCP tools do not provide sufficient information about design patterns, layout guidelines, or component usage best practices, ASK the user: "I'd like to reference https://modus.trimble.com/ for additional Modus design system guidance. May I proceed?"
+   - Only consult the website after receiving user confirmation
+
+**Output**: Component Mapping section in plan.md, framework setup in research.md
 
 ## Key rules
 

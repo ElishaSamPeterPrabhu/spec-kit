@@ -1,7 +1,7 @@
 [project]
-name = "specify-cli"
-version = "0.0.22"
-description = "Specify CLI, part of GitHub Spec Kit. A tool to bootstrap your projects for Spec-Driven Development (SDD)."
+name = "modus-specify-cli"
+version = "1.0.0"
+description = "Trimble Spec-Driven Development Toolkit with Modus Web Components integration. Bootstrap projects with AI-powered spec-driven development and Modus design system defaults."
 requires-python = ">=3.11"
 dependencies = [
     "typer",
@@ -14,6 +14,7 @@ dependencies = [
 
 [project.scripts]
 specify = "specify_cli:main"
+modus-specify = "specify_cli:main"
 
 [build-system]
 requires = ["hatchling"]

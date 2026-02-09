@@ -27,6 +27,26 @@
 **Constraints**: [domain-specific, e.g., <200ms p95, <100MB memory, offline-capable or NEEDS CLARIFICATION]  
 **Scale/Scope**: [domain-specific, e.g., 10k users, 1M LOC, 50 screens or NEEDS CLARIFICATION]
 
+## Component Mapping
+
+<!--
+  REMOVE THIS ENTIRE SECTION IF NOT A UI/FRONTEND PROJECT.
+  ACTION REQUIRED: Fill this section using the Modus Docs MCP tools during Phase 1.5.
+  Call get_modus_component_data("_all_components") to get the catalog, then map each
+  UI requirement to a Modus component.
+-->
+
+**Design System**: Modus Web Components
+**Framework Integration**: [React / Angular / Vue or NEEDS CLARIFICATION]
+
+| Requirement | Modus Component | Key Properties | Notes |
+|-------------|-----------------|----------------|-------|
+| [e.g., FR-001: User login form] | modus-wc-text-input, modus-wc-button | [relevant props from MCP] | [any customization needed] |
+| [e.g., FR-002: Navigation bar] | modus-wc-navbar | [relevant props from MCP] | [configuration details] |
+| [e.g., FR-003: Data display] | modus-wc-table | [relevant props from MCP] | [pagination, sorting needs] |
+
+**Components Not Available in Modus**: [List any requirements that need custom components and why no Modus equivalent exists]
+
 ## Constitution Check
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*

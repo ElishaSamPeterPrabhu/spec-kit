@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "modus-docs": {
+      "command": "npx",
+      "args": [
+        "mcp-remote",
+        "https://modus-docs-mcp-evetechmd5d3edfe.eastus2-01.azurewebsites.net/mcp"
+      ]
+    }
+  }
+}

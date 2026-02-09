@@ -28,6 +28,15 @@
 [PRINCIPLE_5_DESCRIPTION]
 <!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
 
+### [PRINCIPLE_6_NAME]
+<!-- Example: VI. Design System -->
+[PRINCIPLE_6_DESCRIPTION]
+<!-- Example: All user-facing UI MUST use Modus Web Components as the design system;
+     Custom components only when no Modus equivalent exists (document justification);
+     Framework integration follows official Modus guides (React, Angular, Vue);
+     Consult Modus component documentation via MCP tools during planning and implementation;
+     Reference https://modus.trimble.com/ for design patterns and visual guidelines (with user permission) -->
+
 ## [SECTION_2_NAME]
 <!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
 

@@ -1,5 +1,8 @@
 ---
 description: Execute the implementation plan by processing and executing all tasks defined in tasks.md
+tools:
+  - 'modus-docs/get_modus_component_data'
+  - 'modus-docs/get_modus_implementation_data'
 scripts:
   sh: scripts/bash/check-prerequisites.sh --json --require-tasks --include-tasks
   ps: scripts/powershell/check-prerequisites.ps1 -Json -RequireTasks -IncludeTasks
@@ -120,7 +123,14 @@ You **MUST** consider the user input before proceeding (if not empty).
    - **Integration work**: Database connections, middleware, logging, external services
    - **Polish and validation**: Unit tests, performance optimization, documentation
 
-8. Progress tracking and error handling:
+8. **Modus Web Components integration** (if plan.md contains a Component Mapping section):
+   - **Before starting any frontend/UI task**: Call `get_modus_implementation_data` for the target framework (React, Angular, or Vue) to get setup and integration instructions
+   - **Before implementing each UI component**: Call `get_modus_component_data("modus-wc-{name}")` for the component listed in the Component Mapping to get its exact API (properties, events, methods, slots, usage examples)
+   - **Use the Component Mapping from plan.md** as the source of truth for which Modus components to use for each requirement
+   - **For custom components** (listed in "Components Not Available in Modus"): Follow Modus design patterns for consistency
+   - **If you encounter uncertainty** about Modus design tokens, spacing, typography, or visual patterns not covered by the MCP data, ASK the user before consulting https://modus.trimble.com/ for guidance. Do NOT access external URLs without explicit user permission.
+
+9. Progress tracking and error handling:
    - Report progress after each completed task
    - Halt execution if any non-parallel task fails
    - For parallel tasks [P], continue with successful tasks, report failed ones
@@ -128,7 +138,7 @@ You **MUST** consider the user input before proceeding (if not empty).
    - Suggest next steps if implementation cannot proceed
    - **IMPORTANT** For completed tasks, make sure to mark the task off as [X] in the tasks file.
 
-9. Completion validation:
+10. Completion validation:
    - Verify all required tasks are completed
    - Check that implemented features match the original specification
    - Validate that tests pass and coverage meets requirements
