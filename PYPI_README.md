@@ -11,7 +11,7 @@ pip install trimble-spec-kit
 ## Quick Start
 
 ```bash
-speckit init my-app --ai cursor
+speckit init my-app --ai cursor-agent
 cd my-app
 ```
 
@@ -24,12 +24,25 @@ Then open the project in your AI agent (Cursor, Claude Code, Copilot, etc.) and 
 
 ## Supported AI Agents
 
-cursor, claude, copilot, gemini, windsurf, codex, opencode, qwen, kilocode, auggie, roo, codebuddy, qoder, amp, shai, q, bob
-
-```bash
-speckit init my-app --ai claude
-speckit init my-app --ai copilot
-```
+| Agent | CLI Flag |
+|-------|----------|
+| Cursor | `--ai cursor-agent` |
+| Claude Code | `--ai claude` |
+| GitHub Copilot | `--ai copilot` |
+| Gemini CLI | `--ai gemini` |
+| Windsurf | `--ai windsurf` |
+| Codex CLI | `--ai codex` |
+| opencode | `--ai opencode` |
+| Qwen Code | `--ai qwen` |
+| Kilo Code | `--ai kilocode` |
+| Auggie CLI | `--ai auggie` |
+| Roo Code | `--ai roo` |
+| CodeBuddy | `--ai codebuddy` |
+| Qoder CLI | `--ai qoder` |
+| Amazon Q | `--ai q` |
+| Amp | `--ai amp` |
+| SHAI | `--ai shai` |
+| IBM Bob | `--ai bob` |
 
 ## Modus Web Components
 
