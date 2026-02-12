@@ -1,0 +1,42 @@
+{
+  "name": "trimble-spec-kit",
+  "version": "1.0.3",
+  "description": "Trimble Spec-Driven Development Toolkit with Modus Web Components integration. Uses AI agents to turn specifications into working code with Modus as the default design system.",
+  "keywords": [
+    "spec-driven-development",
+    "ai",
+    "modus",
+    "trimble",
+    "specification",
+    "code-generation",
+    "ai-agent",
+    "cursor",
+    "claude",
+    "copilot"
+  ],
+  "homepage": "https://github.com/ElishaSamPeterPrabhu/spec-kit",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ElishaSamPeterPrabhu/spec-kit.git"
+  },
+  "license": "MIT",
+  "author": "Trimble",
+  "files": [
+    "templates/",
+    "scripts/",
+    "memory/",
+    "extensions/",
+    "CHANGELOG.md",
+    "LICENSE",
+    "README.md"
+  ],
+  "bin": {
+    "speckit": "./bin/speckit.js"
+  },
+  "scripts": {
+    "prepublishOnly": "node -e \"console.log('Publishing trimble-spec-kit v' + require('./package.json').version)\""
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

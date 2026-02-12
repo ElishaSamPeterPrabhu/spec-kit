@@ -5,7 +5,7 @@ Spec-Driven Development toolkit with Modus Web Components integration. Uses AI a
 ## Install
 
 ```bash
-pip install trimble-spec-kit
+npm install -g trimble-spec-kit
 ```
 
 ## Quick Start
@@ -21,6 +21,7 @@ Then open the project in your AI agent (Cursor, Claude Code, Copilot, etc.) and 
 2. `/speckit.plan` - Generate a technical plan (auto-maps UI to Modus components)
 3. `/speckit.tasks` - Break the plan into tasks
 4. `/speckit.implement` - Build it
+5. `/speckit.migrate` - Migrate an existing MUI project to Modus Web Components
 
 ## Supported AI Agents
 
@@ -53,5 +54,5 @@ TrimbleID authentication is required on first use. You will be prompted to sign 
 ## Keeping Up to Date
 
 ```bash
-pip install --upgrade trimble-spec-kit
+npm update -g trimble-spec-kit
 ```

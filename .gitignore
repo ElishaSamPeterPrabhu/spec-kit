@@ -1,4 +1,4 @@
-# Python
+# Python (legacy - kept for compatibility)
 __pycache__/
 *.py[cod]
 *$py.class
@@ -26,6 +26,14 @@ ENV/
 env/
 .venv
 
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+*.tgz
+
 # IDE
 .vscode/
 .idea/
@@ -38,7 +46,6 @@ env/
 *.log
 .env
 .env.local
-*.lock
 
 # Spec Kit-specific files
 .genreleases/
