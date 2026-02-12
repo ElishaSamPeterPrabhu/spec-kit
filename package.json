@@ -22,6 +22,7 @@
   "license": "MIT",
   "author": "Trimble",
   "files": [
+    "bin/",
     "templates/",
     "scripts/",
     "memory/",
@@ -31,7 +32,10 @@
     "README.md"
   ],
   "bin": {
-    "speckit": "./bin/speckit.js"
+    "speckit": "bin/speckit.js"
+  },
+  "directories": {
+    "bin": "bin"
   },
   "scripts": {
     "prepublishOnly": "node -e \"console.log('Publishing trimble-spec-kit v' + require('./package.json').version)\""
